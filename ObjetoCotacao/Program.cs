@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text.Json;
 using ObjetosCotacao.Produto;
 
 public class Program
@@ -13,11 +14,14 @@ public class Program
 
         Console.WriteLine("------------------------------------------------------------------------------------");
 
+        CultureInfo culturaBrasileira = new CultureInfo("pt-BR");
+        CultureInfo culturaAmericana = new CultureInfo("en-US");
         var totalprecos = await ProdutoService.SomarPrecos();
-        Console.WriteLine($"total dos preços: {totalprecos}");
+        Console.WriteLine($"Total dos preços: {totalprecos.ToString("f2", culturaBrasileira)}");
         var cotacaodolar = await CotacaoService.BuscarCotacaoDolar();
-        var precototaldosprodutosemreal = totalprecos * double.Parse(cotacaodolar.High);
-        Console.WriteLine($"total dos preços em real: {precototaldosprodutosemreal:F2}");
+        var valorHigh = double.Parse(cotacaodolar.High, culturaAmericana);
+        var precototaldosprodutosemreal = totalprecos * valorHigh;
+        Console.WriteLine($"Total dos preços em real: {precototaldosprodutosemreal.ToString("f2",culturaBrasileira)}");
 
         Console.WriteLine("------------------------------------------------------------------------------------");
 
